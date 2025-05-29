@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 import os
+import gdown
 import gc
 import altair as alt
 import matplotlib.pyplot as plt
@@ -12,37 +13,26 @@ from matplotlib.ticker import ScalarFormatter
 import matplotlib.ticker as mtick
 import calendar
 from dateutil.relativedelta import relativedelta
-st.set_page_config(page_title="Analiza danych sprzedażowych lata 2022-2024", layout="wide")
-# Wczytywanie danych z cache
-@st.cache_data
-def wczytaj_dane_z_roku(rok: int) -> pd.DataFrame:
-    sciezka = f"rok{rok}.parquet"
-    if os.path.exists(sciezka):
-        return pd.read_parquet(sciezka)
-    else:
-        # awaryjnie próba z CSV
-        csv_path = f"rok{rok}.csv"
-        if os.path.exists(csv_path):
-            df = pd.read_csv(csv_path)
-            df.to_parquet(sciezka)
-            return df
-        else:
-            st.error(f"Nie znaleziono pliku dla roku {rok}.")
-            return pd.DataFrame()
-@st.cache_resource
-def load_excel():
-    return pd.read_excel("DANE RYNEK 2023-2024.xlsx")
+import requests
+from io import BytesIO
 
-#@st.cache_resource
-#def load_wnioski():
-#    return pd.read_csv("dataWnioski.csv")
+
+url1 =f"https://drive.google.com/uc?export=download&id={1dNNjD4_nAjEfdOCmXRW2IkJRWrmZOKv2}"
+url2 =f"https://drive.google.com/uc?export=download&id={12mhaL_5ii73QTuNBDLj-g_8m6hW4Pt62}"
+url3 =f"https://drive.google.com/uc?export=download&id={1sFG4A0j4qvBeGleAChgQPPc3nSkjfgNf}"
+response1 = requests.get(url1)
+response2 = requests.get(url2)
+response3 = requests.get(url3)
+st.set_page_config(page_title="Analiza danych sprzedażowych lata 2022-2024", layout="wide")
+@st.cache_data
+url = "https://docs.google.com/spreadsheets/d/1-ht0X_NyVlJI8hOxxzKp6Z-4c7uvR-z7/export?format=csv"
+rynek = pd.read_csv(url)
+
 
 # Ładowanie danych
-rok_2022 = wczytaj_dane_z_roku(2022)
-rok_2023 = wczytaj_dane_z_roku(2023)
-rok_2024 = wczytaj_dane_z_roku(2024)
-#wnioski = load_wnioski()
-rynek=load_excel()
+rok_2022 = pd.read_parquet(BytesIO(response1.content))
+rok_2023 = pd.read_parquet(BytesIO(response2.content))
+rok_2024 = pd.read_parquet(BytesIO(response3.content))
 st.title(" 📊 Dashboard marketingowy Neuca")
 tab1, tab2, tab3, tab4,tab5 = st.tabs(["📈 Przegląd lat 2022-2024", "📈 Wykresy czasowe", "🏆 Top 10","Analiza Pareto",'Udziały rynkowe'])
     
