@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 import os
+import gdown
 import gc
 import altair as alt
 import matplotlib.pyplot as plt
@@ -18,18 +19,16 @@ from io import BytesIO
 st.set_page_config(page_title="Analiza danych sprzedażowych lata 2022-2024", layout="wide")
 st.title("📊 Dashboard marketingowy Neuca")
 tab1, tab2, tab3, tab4,tab5 = st.tabs(["📈 Przegląd lat 2022-2024", "📈 Wykresy czasowe", "🏆 Top 10","Analiza Pareto",'Udziały rynkowe'])
-  
-url1 = "https://drive.google.com/uc?export=download&id=1dNNjD4_nAjEfdOCmXRW2IkJRWrmZOKv2"
-url2 = "https://drive.google.com/uc?export=download&id=12mhaL_5ii73QTuNBDLj-g_8m6hW4Pt62"
-url3 = "https://drive.google.com/uc?export=download&id=1sFG4A0j4qvBeGleAChgQPPc3nSkjfgNf"
 @st.cache_data(show_spinner=True)
-def load_parquet_from_url(url):
-    response = requests.get(url)
-    return pd.read_parquet(BytesIO(response.content))
+def load_parquet_from_gdrive(id, filename):
+    if not os.path.exists(filename):
+        gdown.download(f"https://drive.google.com/uc?id={id}", filename, quiet=False)
+    return pd.read_parquet(filename)
 
-rok_2022 = load_parquet_from_url(url1)
-rok_2023 = load_parquet_from_url(url2)
-rok_2024 = load_parquet_from_url(url3)
+rok_2022 = load_parquet_from_gdrive("1dNNjD4_nAjEfdOCmXRW2IkJRWrmZOKv2", "rok_2022.parquet")
+rok_2023 = load_parquet_from_gdrive("12mhaL_5ii73QTuNBDLj-g_8m6hW4Pt62", "rok_2023.parquet")
+rok_2024 = load_parquet_from_gdrive("1sFG4A0j4qvBeGleAChgQPPc3nSkjfgNf", "rok_2024.parquet")
+
 
 @st.cache_data
 def load_data():
