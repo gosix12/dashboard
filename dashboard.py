@@ -18,8 +18,8 @@ from io import BytesIO
 
 st.set_page_config(page_title="Analiza danych sprzedażowych lata 2022-2024", layout="wide")
 st.title("📊 Dashboard marketingowy Neuca")
-
-# Ładowanie danych z Google Drive
+tab1, tab2, tab3, tab4,tab5 = st.tabs(["📈 Przegląd lat 2022-2024", "📈 Wykresy czasowe", "🏆 Top 10","Analiza Pareto",'Udziały rynkowe'])
+  
 url1 = "https://drive.google.com/uc?export=download&id=1dNNjD4_nAjEfdOCmXRW2IkJRWrmZOKv2"
 url2 = "https://drive.google.com/uc?export=download&id=12mhaL_5ii73QTuNBDLj-g_8m6hW4Pt62"
 url3 = "https://drive.google.com/uc?export=download&id=1sFG4A0j4qvBeGleAChgQPPc3nSkjfgNf"
@@ -27,28 +27,18 @@ url3 = "https://drive.google.com/uc?export=download&id=1sFG4A0j4qvBeGleAChgQPPc3
 response1 = requests.get(url1)
 response2 = requests.get(url2)
 response3 = requests.get(url3)
-
-st.write("Statusy odpowiedzi:", response1.status_code, response2.status_code, response3.status_code)
-
-try:
-    rok_2022 = pd.read_parquet(BytesIO(response1.content))
-    rok_2023 = pd.read_parquet(BytesIO(response2.content))
-    rok_2024 = pd.read_parquet(BytesIO(response3.content))
-except Exception as e:
-    st.error(f"Błąd przy wczytywaniu plików .parquet: {e}")
-    st.stop()
-
-# Wczytywanie danych z Google Sheets
+st.set_page_config(page_title="Analiza danych sprzedażowych lata 2022-2024", layout="wide")
 @st.cache_data
 def load_data():
     url = "https://docs.google.com/spreadsheets/d/1-ht0X_NyVlJI8hOxxzKp6Z-4c7uvR-z7/export?format=csv"
     return pd.read_csv(url)
+rynek = load_data()
 
-try:
-    rynek = load_data()
-except Exception as e:
-    st.error(f"Błąd przy wczytywaniu pliku CSV z Google Sheets: {e}")
-    st.stop()
+# Ładowanie danych
+rok_2022 = pd.read_parquet(BytesIO(response1.content))
+rok_2023 = pd.read_parquet(BytesIO(response2.content))
+rok_2024 = pd.read_parquet(BytesIO(response3.content))
+
 
 
 # --- Funkcje pomocnicze ---
