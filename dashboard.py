@@ -23,10 +23,15 @@ tab1, tab2, tab3, tab4,tab5 = st.tabs(["📈 Przegląd lat 2022-2024", "📈 Wyk
 url1 = "https://drive.google.com/uc?export=download&id=1dNNjD4_nAjEfdOCmXRW2IkJRWrmZOKv2"
 url2 = "https://drive.google.com/uc?export=download&id=12mhaL_5ii73QTuNBDLj-g_8m6hW4Pt62"
 url3 = "https://drive.google.com/uc?export=download&id=1sFG4A0j4qvBeGleAChgQPPc3nSkjfgNf"
+@st.cache_data(show_spinner=True)
+def load_parquet_from_url(url):
+    response = requests.get(url)
+    return pd.read_parquet(BytesIO(response.content))
 
-response1 = requests.get(url1)
-response2 = requests.get(url2)
-response3 = requests.get(url3)
+rok_2022 = load_parquet_from_url(url1)
+rok_2023 = load_parquet_from_url(url2)
+rok_2024 = load_parquet_from_url(url3)
+
 @st.cache_data
 def load_data():
     url = "https://docs.google.com/spreadsheets/d/1-ht0X_NyVlJI8hOxxzKp6Z-4c7uvR-z7/export?format=csv"
@@ -50,20 +55,6 @@ def info_card(title, value, color, icon):
         </div>
         """, unsafe_allow_html=True)
     
-def licz_statystyki(dane):
-        dane = dane.copy()
-        dane = dane[(dane['Sprzedaż ilość'] > 0) & (dane['Sprzedaż budżetowa'] > 0)]
-        dane['Średnia cena jednostkowa'] = dane['Sprzedaż budżetowa'] / dane['Sprzedaż ilość']
-        return dane['Średnia cena jednostkowa'].describe().round(2)
-    
-def pokaz_histogram(dane, rok):
-        dane = dane.copy()
-        dane = dane[(dane['Sprzedaż ilość'] > 0) & (dane['Sprzedaż budżetowa'] > 0)]
-        dane['Średnia cena jednostkowa'] = dane['Sprzedaż budżetowa'] / dane['Sprzedaż ilość']
-        fig = px.histogram(dane, x='Średnia cena jednostkowa', nbins=50,
-                           title=f'Histogram ceny jednostkowej - {rok}',
-                           color_discrete_sequence=['#1f77b4'])
-        st.plotly_chart(fig, use_container_width=True)
 # 🔢 Agregujemy dane do jednej tabeli
 def przygotuj_statystyki(df_2022, df_2023, df_2024):
     lata = [2022, 2023, 2024]
