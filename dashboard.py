@@ -27,7 +27,6 @@ url3 = "https://drive.google.com/uc?export=download&id=1sFG4A0j4qvBeGleAChgQPPc3
 response1 = requests.get(url1)
 response2 = requests.get(url2)
 response3 = requests.get(url3)
-st.set_page_config(page_title="Analiza danych sprzedażowych lata 2022-2024", layout="wide")
 @st.cache_data
 def load_data():
     url = "https://docs.google.com/spreadsheets/d/1-ht0X_NyVlJI8hOxxzKp6Z-4c7uvR-z7/export?format=csv"
