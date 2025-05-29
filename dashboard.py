@@ -107,7 +107,7 @@ with tab1:
 with tab2:
     # === FUNKCJE POMOCNICZE ===
     
-    @st.cache_data
+
     def przypisz_typ_sprzedazy(df):
         def typ_sprzedazy(row):
             if pd.notna(row['Sprzedaż budżetowa ZP']) and row['Sprzedaż budżetowa ZP'] > 0:
@@ -119,7 +119,7 @@ with tab2:
         df['Typ sprzedaży'] = df.apply(typ_sprzedazy, axis=1)
         return df
     
-    @st.cache_data
+
     def przygotuj_daty(df):
         df['Data'] = pd.to_datetime(df['Rok'].astype(str) + '-' + df['Miesiąc'].astype(str) + '-01')
         df['Miesiąc_nazwa'] = df['Miesiąc'].apply(lambda x: calendar.month_name[x])
