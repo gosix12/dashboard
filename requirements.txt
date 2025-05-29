@@ -1,5 +1,8 @@
 streamlit
+io
+requests
 pandas
+gdown
 numpy
 plotly
 altair
