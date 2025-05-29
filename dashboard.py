@@ -17,9 +17,9 @@ import requests
 from io import BytesIO
 
 
-url1 =f"https://drive.google.com/uc?export=download&id={1dNNjD4_nAjEfdOCmXRW2IkJRWrmZOKv2}"
-url2 =f"https://drive.google.com/uc?export=download&id={12mhaL_5ii73QTuNBDLj-g_8m6hW4Pt62}"
-url3 =f"https://drive.google.com/uc?export=download&id={1sFG4A0j4qvBeGleAChgQPPc3nSkjfgNf}"
+url1 =f"https://drive.google.com/uc?export=download&id={"1dNNjD4_nAjEfdOCmXRW2IkJRWrmZOKv2"}"
+url2 =f"https://drive.google.com/uc?export=download&id={"12mhaL_5ii73QTuNBDLj-g_8m6hW4Pt62"}"
+url3 =f"https://drive.google.com/uc?export=download&id={"1sFG4A0j4qvBeGleAChgQPPc3nSkjfgNf"}"
 response1 = requests.get(url1)
 response2 = requests.get(url2)
 response3 = requests.get(url3)
