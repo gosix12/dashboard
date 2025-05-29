@@ -17,17 +17,19 @@ import requests
 from io import BytesIO
 
 
-url1 =f"https://drive.google.com/uc?export=download&id={"1dNNjD4_nAjEfdOCmXRW2IkJRWrmZOKv2"}"
-url2 =f"https://drive.google.com/uc?export=download&id={"12mhaL_5ii73QTuNBDLj-g_8m6hW4Pt62"}"
-url3 =f"https://drive.google.com/uc?export=download&id={"1sFG4A0j4qvBeGleAChgQPPc3nSkjfgNf"}"
+url1 = "https://drive.google.com/uc?export=download&id=1dNNjD4_nAjEfdOCmXRW2IkJRWrmZOKv2"
+url2 = "https://drive.google.com/uc?export=download&id=12mhaL_5ii73QTuNBDLj-g_8m6hW4Pt62"
+url3 = "https://drive.google.com/uc?export=download&id=1sFG4A0j4qvBeGleAChgQPPc3nSkjfgNf"
+
 response1 = requests.get(url1)
 response2 = requests.get(url2)
 response3 = requests.get(url3)
 st.set_page_config(page_title="Analiza danych sprzedażowych lata 2022-2024", layout="wide")
 @st.cache_data
-url = "https://docs.google.com/spreadsheets/d/1-ht0X_NyVlJI8hOxxzKp6Z-4c7uvR-z7/export?format=csv"
-rynek = pd.read_csv(url)
-
+def load_data():
+    url = "https://docs.google.com/spreadsheets/d/1-ht0X_NyVlJI8hOxxzKp6Z-4c7uvR-z7/export?format=csv"
+    return pd.read_csv(url)
+rynek = load_data()
 
 # Ładowanie danych
 rok_2022 = pd.read_parquet(BytesIO(response1.content))
