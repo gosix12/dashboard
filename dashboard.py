@@ -25,6 +25,9 @@ response1 = requests.get(url1)
 response2 = requests.get(url2)
 response3 = requests.get(url3)
 st.set_page_config(page_title="Analiza danych sprzedażowych lata 2022-2024", layout="wide")
+st.title(" 📊 Dashboard marketingowy Neuca")
+tab1, tab2, tab3, tab4,tab5 = st.tabs(["📈 Przegląd lat 2022-2024", "📈 Wykresy czasowe", "🏆 Top 10","Analiza Pareto",'Udziały rynkowe'])
+    
 @st.cache_data
 def load_data():
     url = "https://docs.google.com/spreadsheets/d/1-ht0X_NyVlJI8hOxxzKp6Z-4c7uvR-z7/export?format=csv"
@@ -35,9 +38,7 @@ rynek = load_data()
 rok_2022 = pd.read_parquet(BytesIO(response1.content))
 rok_2023 = pd.read_parquet(BytesIO(response2.content))
 rok_2024 = pd.read_parquet(BytesIO(response3.content))
-st.title(" 📊 Dashboard marketingowy Neuca")
-tab1, tab2, tab3, tab4,tab5 = st.tabs(["📈 Przegląd lat 2022-2024", "📈 Wykresy czasowe", "🏆 Top 10","Analiza Pareto",'Udziały rynkowe'])
-    
+
 # --- Funkcje pomocnicze ---
 def info_card(title, value, color, icon):
         st.markdown(f"""
