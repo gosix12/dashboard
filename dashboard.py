@@ -20,11 +20,12 @@ rok_2023 = download_and_load_parquet("12mhaL_5ii73QTuNBDLj-g_8m6hW4Pt62", "rok_2
 rok_2024 = download_and_load_parquet("1sFG4A0j4qvBeGleAChgQPPc3nSkjfgNf", "rok_2024.parquet")
 
 @st.cache_data
-def load_excel(file_id: str, filename: str) -> pd.DataFrame:
+def load_excel(file_id: str, filename: str, engine='openpyxl') -> pd.DataFrame:
     if not os.path.exists(filename):
         url = f"https://drive.google.com/uc?id={file_id}"
         gdown.download(url, filename, quiet=False)
-    return pd.read_excel(filename)
+    return pd.read_excel(filename, engine=engine)
+
 
 rynek = load_excel("1-ht0X_NyVlJI8hOxxzKp6Z-4c7uvR-z7", "rynek.xlsx", engine='openpyxl')
 # Zakładki
