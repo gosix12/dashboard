@@ -26,7 +26,7 @@ def load_excel(file_id: str, filename: str) -> pd.DataFrame:
         gdown.download(url, filename, quiet=False)
     return pd.read_excel(filename)
 
-rynek = load_excel("1-ht0X_NyVlJI8hOxxzKp6Z-4c7uvR-z7", "rynek.xlsx")
+rynek = load_excel("1-ht0X_NyVlJI8hOxxzKp6Z-4c7uvR-z7", "rynek.xlsx", engine='openpyxl')
 # Zakładki
 tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "📈 Przegląd lat 2022-2024",
