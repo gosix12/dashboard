@@ -1,10 +1,10 @@
 streamlit
 requests
 pandas
-gdown
 numpy
 plotly
 altair
+gdown
 matplotlib
 seaborn
 python-dateutil
