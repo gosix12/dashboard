@@ -1,30 +1,33 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
-import plotly.express as px
-import gdown
 import os
-<<<<<<< Updated upstream
-import gdown
-import gc
-=======
->>>>>>> Stashed changes
-import altair as alt
-import matplotlib.pyplot as plt
-import seaborn as sns
-import plotly.graph_objects as go
-from matplotlib.ticker import ScalarFormatter
-import matplotlib.ticker as mtick
 import calendar
-from dateutil.relativedelta import relativedelta
-<<<<<<< Updated upstream
-import requests
-from io import BytesIO
+import plotly.graph_objects as go
 
-# Konfiguracja strony – tylko RAZ na początku
+import gdown
+import plotly.express as px
+
 st.set_page_config(page_title="Analiza danych sprzedażowych lata 2022-2024", layout="wide")
-st.title("📊 Dashboard marketingowy Neuca")
 
+@st.cache_data(show_spinner=True)
+def download_and_load_parquet(file_id: str, filename: str) -> pd.DataFrame:
+    if not os.path.exists(filename):
+        url = f"https://drive.google.com/uc?id={file_id}"
+        gdown.download(url, filename, quiet=False)
+    return pd.read_parquet(filename)
+
+rok_2022 = download_and_load_parquet("1dNNjD4_nAjEfdOCmXRW2IkJRWrmZOKv2", "rok_2022.parquet")
+rok_2023 = download_and_load_parquet("12mhaL_5ii73QTuNBDLj-g_8m6hW4Pt62", "rok_2023.parquet")
+rok_2024 = download_and_load_parquet("1sFG4A0j4qvBeGleAChgQPPc3nSkjfgNf", "rok_2024.parquet")
+
+@st.cache_data
+def load_excel(file_id: str, filename: str) -> pd.DataFrame:
+    if not os.path.exists(filename):
+        url = f"https://drive.google.com/uc?id={file_id}"
+        gdown.download(url, filename, quiet=False)
+    return pd.read_excel(filename)
+
+rynek = load_excel("1-ht0X_NyVlJI8hOxxzKp6Z-4c7uvR-z7", "rynek.xlsx")
 # Zakładki
 tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "📈 Przegląd lat 2022-2024",
@@ -33,42 +36,6 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "Analiza Pareto",
     "Udziały rynkowe"
 ])
-
-# Funkcja do wczytania danych z Google Drive (z cache)
-@st.cache_data
-def wczytaj_dane_z_roku(rok: int) -> pd.DataFrame:
-    plik_parquet = f"rok{rok}.parquet"
-    if not os.path.exists(plik_parquet):
-        pliki_gdrive = {
-            2022: "1dNNjD4_nAjEfdOCmXRW2IkJRWrmZOKv2",
-            2023: "12mhaL_5ii73QTuNBDLj-g_8m6hW4Pt62",
-            2024: "1sFG4A0j4qvBeGleAChgQPPc3nSkjfgNf"
-        }
-        file_id = pliki_gdrive.get(rok)
-        if file_id:
-            url = f"https://drive.google.com/uc?id={file_id}"
-            gdown.download(url, plik_parquet, quiet=False)
-        else:
-            st.error(f"Nie znaleziono pliku dla roku {rok}.")
-            return pd.DataFrame()
-    return pd.read_parquet(plik_parquet)
-
-# Funkcja do wczytania pliku Excel z danymi rynkowymi
-@st.cache_data
-def load_excel():
-    excel_path = "rynek.xlsx"
-    if not os.path.exists(excel_path):
-        file_id = "1-ht0X_NyVlJI8hOxxzKp6Z-4c7uvR-z7"
-        url = f"https://drive.google.com/uc?id={file_id}"
-        gdown.download(url, excel_path, quiet=False)
-    return pd.read_excel(excel_path)
-
-# Wczytanie danych
-rok_2022 = wczytaj_dane_z_roku(2022)
-rok_2023 = wczytaj_dane_z_roku(2023)
-rok_2024 = wczytaj_dane_z_roku(2024)
-rynek = load_excel()
-
 # --- Funkcje pomocnicze ---
 def info_card(title, value, color, icon):
         st.markdown(f"""
@@ -78,29 +45,6 @@ def info_card(title, value, color, icon):
             <div style='font-size: 20px;'>{value}</div>
         </div>
         """, unsafe_allow_html=True)
-    
-# 🔢 Agregujemy dane do jednej tabeli
-def przygotuj_statystyki(df_2022, df_2023, df_2024):
-    lata = [2022, 2023, 2024]
-    frames = [df_2022, df_2023, df_2024]
-    rekordy = []
-
-    for df, rok in zip(frames, lata):
-        df = df.copy()
-        df = df[(df['Sprzedaż ilość'] > 0) & (df['Sprzedaż budżetowa'] > 0)]
-        df['cena_jednostkowa'] = df['Sprzedaż budżetowa'] / df['Sprzedaż ilość']
-        grupy = df.groupby('Kategoria nazwa')['cena_jednostkowa']
-        for kat, dane in grupy:
-            rekordy.append({
-                'Kategoria': kat,
-                'Rok': rok,
-                'Średnia': dane.mean(),
-                'Mediana': dane.median()
-            })
-
-    return pd.DataFrame(rekordy)
-
-
 with tab1:
         st.markdown("## ✨ Podsumowanie unikalnych leków i promocji")
         col1, col2, col3, col4, col5, col6 = st.columns(6)
@@ -851,3 +795,4 @@ with tab5:
     
     st.subheader(f"📊 Sprzedaż 2024 (2023) - wg {typ_sprzedazy_wybrany.lower()} sprzedaży")
     st.markdown(tabela_porownawcza.to_html(escape=False, index=False), unsafe_allow_html=True)
+
