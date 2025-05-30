@@ -6,3 +6,4 @@ gdown
 matplotlib
 seaborn
 altair
+openpyxl
