@@ -2,9 +2,13 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import plotly.express as px
+import gdown
 import os
+<<<<<<< Updated upstream
 import gdown
 import gc
+=======
+>>>>>>> Stashed changes
 import altair as alt
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -13,6 +17,7 @@ from matplotlib.ticker import ScalarFormatter
 import matplotlib.ticker as mtick
 import calendar
 from dateutil.relativedelta import relativedelta
+<<<<<<< Updated upstream
 import requests
 from io import BytesIO
 
@@ -40,6 +45,47 @@ rok_2024 = pd.read_parquet(BytesIO(response3.content))
 
 
 
+=======
+st.set_page_config(page_title="Analiza danych sprzedażowych lata 2022-2024", layout="wide")
+
+def wczytaj_dane_z_roku(rok: int) -> pd.DataFrame:
+    plik_parquet = f"rok{rok}.parquet"
+    if not os.path.exists(plik_parquet):
+        # Ustal ID pliku na podstawie roku
+        pliki_gdrive = {
+            2022: "1dNNjD4_nAjEfdOCmXRW2IkJRWrmZOKv2",
+            2023: "12mhaL_5ii73QTuNBDLj-g_8m6hW4Pt62",
+            2024: "1sFG4A0j4qvBeGleAChgQPPc3nSkjfgNf"
+        }
+        file_id = pliki_gdrive.get(rok)
+        if file_id:
+            url = f"https://drive.google.com/uc?id={file_id}"
+            gdown.download(url, plik_parquet, quiet=False)
+        else:
+            st.error(f"Nie znaleziono pliku dla roku {rok}.")
+            return pd.DataFrame()
+    return pd.read_parquet(plik_parquet)
+
+
+@st.cache_data
+def load_excel():
+    excel_path = "rynek.xlsx"
+    if not os.path.exists(excel_path):
+        file_id = "1-ht0X_NyVlJI8hOxxzKp6Z-4c7uvR-z7"
+        url = f"https://drive.google.com/uc?id={file_id}"
+        gdown.download(url, excel_path, quiet=False)
+    return pd.read_excel(excel_path)
+
+rok_2022 = wczytaj_dane_z_roku(2022)
+rok_2023 = wczytaj_dane_z_roku(2023)
+rok_2024 = wczytaj_dane_z_roku(2024)
+rynek = load_excel()
+
+
+st.title(" 📊 Dashboard marketingowy Neuca")
+tab1, tab2, tab3, tab4,tab5 = st.tabs(["📈 Przegląd lat 2022-2024", "📈 Wykresy czasowe", "🏆 Top 10","Analiza Pareto",'Udziały rynkowe'])
+    
+>>>>>>> Stashed changes
 # --- Funkcje pomocnicze ---
 def info_card(title, value, color, icon):
         st.markdown(f"""
