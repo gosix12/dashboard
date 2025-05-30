@@ -3,8 +3,6 @@ import pandas as pd
 import os
 import calendar
 import plotly.graph_objects as go
-
-import gdown
 import plotly.express as px
 
 st.set_page_config(page_title="Analiza danych sprzedażowych lata 2022-2024", layout="wide")
@@ -795,4 +793,6 @@ with tab5:
     
     st.subheader(f"📊 Sprzedaż 2024 (2023) - wg {typ_sprzedazy_wybrany.lower()} sprzedaży")
     st.markdown(tabela_porownawcza.to_html(escape=False, index=False), unsafe_allow_html=True)
+
+
 
