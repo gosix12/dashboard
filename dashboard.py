@@ -21,37 +21,24 @@ from dateutil.relativedelta import relativedelta
 import requests
 from io import BytesIO
 
+# Konfiguracja strony – tylko RAZ na początku
 st.set_page_config(page_title="Analiza danych sprzedażowych lata 2022-2024", layout="wide")
 st.title("📊 Dashboard marketingowy Neuca")
-tab1, tab2, tab3, tab4,tab5 = st.tabs(["📈 Przegląd lat 2022-2024", "📈 Wykresy czasowe", "🏆 Top 10","Analiza Pareto",'Udziały rynkowe'])
-  
-url1 = "https://drive.google.com/uc?export=download&id=1dNNjD4_nAjEfdOCmXRW2IkJRWrmZOKv2"
-url2 = "https://drive.google.com/uc?export=download&id=12mhaL_5ii73QTuNBDLj-g_8m6hW4Pt62"
-url3 = "https://drive.google.com/uc?export=download&id=1sFG4A0j4qvBeGleAChgQPPc3nSkjfgNf"
 
-response1 = requests.get(url1)
-response2 = requests.get(url2)
-response3 = requests.get(url3)
+# Zakładki
+tab1, tab2, tab3, tab4, tab5 = st.tabs([
+    "📈 Przegląd lat 2022-2024",
+    "📈 Wykresy czasowe",
+    "🏆 Top 10",
+    "Analiza Pareto",
+    "Udziały rynkowe"
+])
+
+# Funkcja do wczytania danych z Google Drive (z cache)
 @st.cache_data
-def load_data():
-    url = "https://docs.google.com/spreadsheets/d/1-ht0X_NyVlJI8hOxxzKp6Z-4c7uvR-z7/export?format=csv"
-    return pd.read_csv(url)
-rynek = load_data()
-
-# Ładowanie danych
-rok_2022 = pd.read_parquet(BytesIO(response1.content))
-rok_2023 = pd.read_parquet(BytesIO(response2.content))
-rok_2024 = pd.read_parquet(BytesIO(response3.content))
-
-
-
-=======
-st.set_page_config(page_title="Analiza danych sprzedażowych lata 2022-2024", layout="wide")
-
 def wczytaj_dane_z_roku(rok: int) -> pd.DataFrame:
     plik_parquet = f"rok{rok}.parquet"
     if not os.path.exists(plik_parquet):
-        # Ustal ID pliku na podstawie roku
         pliki_gdrive = {
             2022: "1dNNjD4_nAjEfdOCmXRW2IkJRWrmZOKv2",
             2023: "12mhaL_5ii73QTuNBDLj-g_8m6hW4Pt62",
@@ -66,7 +53,7 @@ def wczytaj_dane_z_roku(rok: int) -> pd.DataFrame:
             return pd.DataFrame()
     return pd.read_parquet(plik_parquet)
 
-
+# Funkcja do wczytania pliku Excel z danymi rynkowymi
 @st.cache_data
 def load_excel():
     excel_path = "rynek.xlsx"
@@ -76,16 +63,12 @@ def load_excel():
         gdown.download(url, excel_path, quiet=False)
     return pd.read_excel(excel_path)
 
+# Wczytanie danych
 rok_2022 = wczytaj_dane_z_roku(2022)
 rok_2023 = wczytaj_dane_z_roku(2023)
 rok_2024 = wczytaj_dane_z_roku(2024)
 rynek = load_excel()
 
-
-st.title(" 📊 Dashboard marketingowy Neuca")
-tab1, tab2, tab3, tab4,tab5 = st.tabs(["📈 Przegląd lat 2022-2024", "📈 Wykresy czasowe", "🏆 Top 10","Analiza Pareto",'Udziały rynkowe'])
-    
->>>>>>> Stashed changes
 # --- Funkcje pomocnicze ---
 def info_card(title, value, color, icon):
         st.markdown(f"""
@@ -96,20 +79,6 @@ def info_card(title, value, color, icon):
         </div>
         """, unsafe_allow_html=True)
     
-def licz_statystyki(dane):
-        dane = dane.copy()
-        dane = dane[(dane['Sprzedaż ilość'] > 0) & (dane['Sprzedaż budżetowa'] > 0)]
-        dane['Średnia cena jednostkowa'] = dane['Sprzedaż budżetowa'] / dane['Sprzedaż ilość']
-        return dane['Średnia cena jednostkowa'].describe().round(2)
-    
-def pokaz_histogram(dane, rok):
-        dane = dane.copy()
-        dane = dane[(dane['Sprzedaż ilość'] > 0) & (dane['Sprzedaż budżetowa'] > 0)]
-        dane['Średnia cena jednostkowa'] = dane['Sprzedaż budżetowa'] / dane['Sprzedaż ilość']
-        fig = px.histogram(dane, x='Średnia cena jednostkowa', nbins=50,
-                           title=f'Histogram ceny jednostkowej - {rok}',
-                           color_discrete_sequence=['#1f77b4'])
-        st.plotly_chart(fig, use_container_width=True)
 # 🔢 Agregujemy dane do jednej tabeli
 def przygotuj_statystyki(df_2022, df_2023, df_2024):
     lata = [2022, 2023, 2024]
