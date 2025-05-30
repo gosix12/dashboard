@@ -1,3 +1,8 @@
 streamlit
 pandas
 plotly
+requests
+gdown
+matplotlib
+seaborn
+altair
