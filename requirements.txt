@@ -1,9 +1,12 @@
-streamlit
-pandas
-plotly
+streamlit==1.33.0
+pandas==2.2.2
+gdown==5.2.0
+graphviz==0.20.1
+Pillow==10.3.0
+plotly==5.22.0
+matplotlib==3.9.0
 requests
-gdown
-matplotlib
 seaborn
 altair
 openpyxl
+
